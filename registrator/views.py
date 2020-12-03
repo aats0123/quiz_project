@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views.generic import TemplateView
 
-from registrator.forms import StudentRegisterForm, StudentProfileForm
+from registrator.forms import StudentRegisterForm, StudentProfileForm, TeacherRegisterForm, TeacherProfileForm
 
 
 class RegisterStudentView(TemplateView):
@@ -41,4 +41,32 @@ class RegisterStudentView(TemplateView):
 
 
 class RegisterTeacherView(TemplateView):
-    pass
+    template_name = 'registrator/teacher.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['teacher_form'] = TeacherRegisterForm()
+        context['teacher_profile_form'] = TeacherProfileForm()
+        return context
+
+    @transaction.atomic
+    def post(self, request):
+        teacher_form = TeacherRegisterForm(request.POST)
+        teacher_profile_form = TeacherProfileForm(request.POST)
+
+        if teacher_form.is_valid() and teacher_profile_form.is_valid():
+            teacher = teacher_form.save()
+            teacher.groups.add(Group.objects.get(name__exact='teachers'))
+            profile = teacher_profile_form.save(commit=False)
+            profile.user = teacher
+            profile.save()
+            login(request, teacher)
+            return redirect('quiz-home')
+
+        context = {
+            'teacher_form': TeacherRegisterForm(),
+            'teacher_profile_form': StudentProfileForm(),
+        }
+
+        return render(request, 'registrator/student.html', context)
+

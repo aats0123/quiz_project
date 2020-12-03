@@ -26,14 +26,14 @@ class StudentProfileForm(forms.ModelForm):
 class TeacherRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('first)name', 'last_name', 'username', 'password1', 'password2', 'email')
+        fields = ('first_name', 'last_name', 'username', 'password1', 'password2', 'email')
         widgets = {
             'password1': forms.PasswordInput(),
             'password2': forms.PasswordInput()
         }
 
 
-class TeacherRegisterForm(forms.ModelForm):
+class TeacherProfileForm(forms.ModelForm):
     class Meta:
         model = TeacherProfile
         exclude = ('user',)

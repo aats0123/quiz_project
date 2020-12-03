@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ teacher_form.as_p }}
+    {{ teacher_profile_form.as_p }}
+    <button type="submit">Register</button>
+</form>
+
+</body>
+</html>
