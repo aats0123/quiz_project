@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Quiz - Login {% endblock %}
+{% block content %}
+    <h2>Login</h2>
+  <form method="post">
+  <input type="hidden" name="return_url" value="{{ request.GET.next }}" />
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  <p>или се регистрирай като<a href="{% url 'register-student' %}?next={{ request.GET.next }}">ученик</a></p>
+  <p>или като<a href="{% url 'register-teacher' %}?next={{ request.GET.next }}">чител</a></p>
+  </form>
+{% endblock %}

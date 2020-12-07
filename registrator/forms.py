@@ -37,3 +37,16 @@ class TeacherProfileForm(forms.ModelForm):
     class Meta:
         model = TeacherProfile
         exclude = ('user',)
+
+
+class TeacherLoginForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(
+        widget=forms.PasswordInput(),
+    )

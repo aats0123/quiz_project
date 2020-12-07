@@ -30,6 +30,7 @@ class StudentProfile(models.Model):
     def __str__(self):
         return f'{self.user.first_name[0].upper()}. {self.user.last_name}, {self.school}, {self.grade} - {self.school_class}'
 
+
 class StudentTest(models.Model):
     student = models.ManyToManyField(User)
     test = models.ManyToManyField(Quiz, related_name='tests')

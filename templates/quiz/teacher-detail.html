@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Профил - {{ user.first_name }} {{ user.last_name }}{% endblock %}
+{% block content %}
+<p>{{ user.first_name }} {{ user.last_name }}.</p>
+<p>Учител в училище {{ profile.school }}</p>
+<p>Предмет: {{ profile.subject}}</p>
+{% if not quizzes %}
+<p>Нямате създадени тестове.</p>
+{% else %}
+    Това са създадените от Вас тестове:
+    {% for quiz in quizzes %}
+        <div><a href="{% url 'quiz-detail' quiz.id %}">{{ quiz.title }}</a></div>
+    {% endfor %}
+{% endif %}
+<p>Създайте <a href="{% url 'quiz-create' %}">тест.</a></p>
+{% endblock %}

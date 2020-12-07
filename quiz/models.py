@@ -2,10 +2,10 @@ from django.contrib.auth.models import User
 from django.db import models
 
 SUBJECT = (
-    ('mathematics', 'Математика'),
-    ('history', 'История'),
-    ('geography', 'Геогрфия'),
-    ('physics', 'Физика'),
+    ('Математика', 'Математика'),
+    ('История', 'История'),
+    ('География', 'Геогрфия'),
+    ('Физика', 'Физика'),
 )
 
 
@@ -13,7 +13,7 @@ class Quiz(models.Model):
     title = models.CharField(max_length=255)
     subject = models.CharField(max_length=11, choices=SUBJECT)
     description = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Quizzes"
@@ -27,11 +27,13 @@ class Question(models.Model):
     author = models.ForeignKey(
         User,
         related_name='questions',
-        on_delete=models.DO_NOTHING,
+        on_delete=models.CASCADE,
     )
     prompt = models.CharField(max_length=255)
-    quiz = models.ManyToManyField(
+    quiz = models.ForeignKey(
         Quiz,
+        on_delete=models.CASCADE,
+        #default=1000,
         related_name='questions',
     )
     subject = models.CharField(max_length=11, choices=SUBJECT)

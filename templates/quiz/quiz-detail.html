@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Test "{{ quiz.title }}"{% endblock %}
+{% block content %}
+<h1>{{ quiz.title }}</h1>
+<p>Автор: {{ quiz.author }}</p>
+<p>Предмет: {{ quiz.subject }}</p>
+{% if not questions %}
+<p>Все още няма зададени въпроси за този тест.</p>
+{% else %}
+    Този тест съдържа следните въпроси:
+    {% for question in questions %}
+        <div><a href="{% url 'question-detail' pk=quiz.id id=question.id %}">{{ question.prompt }}   </a></div>
+    {% endfor %}
+{% endif %}
+    <input type="hidden" name="quiz_id" value="{{ quiz.id }}" />
+<p>Добвете <a href="{% url 'question-create' pk=quiz.id%}">въпрос.</a></p>
+
+{% endblock %}
