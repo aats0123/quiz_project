@@ -1,6 +1,6 @@
 from django import forms
 
-from quiz.models import Quiz, Question, Answer
+from quiz.models import Quiz, Question, Answer, StudentTest
 from registrator.models import TeacherProfile
 
 
@@ -18,6 +18,10 @@ class QuizCreateForm(forms.ModelForm):
         return quiz
 
 
+class BulkCreateForm(forms.Form):
+    file = forms.FileField()
+
+
 class QuestionCreateForm(forms.ModelForm):
     class Meta:
         model = Question
@@ -27,9 +31,9 @@ class QuestionCreateForm(forms.ModelForm):
     #     super().__init__(*args, **kwargs)
     #     if not quiz_id:
     #         self.fields['quiz'] = forms.ModelChoiceField(queryset=Quiz.objects.filter(author=user))
-        # else:
-        #     self.fields['quiz'] = Quiz.objects.get(id=quiz_id)
-        #     #self.fields['quiz']
+    # else:
+    #     self.fields['quiz'] = Quiz.objects.get(id=quiz_id)
+    #     #self.fields['quiz']
     def save(self, user=None, quiz_id=None):
         question = super().save(commit=False)
         teacher_profile = TeacherProfile.objects.get(user=user)
@@ -52,3 +56,15 @@ class AnswerCreateForm(forms.ModelForm):
         answer = super().save(commit=False)
         answer.question = Question.objects.get(id=question_id)
         answer.save()
+
+class QuizAssignForm(forms.ModelForm):
+    # quiz = forms.ModelMultipleChoiceField()
+    class Meta:
+        model = StudentTest
+        exclude = ('is_compleated', 'score')
+
+    def __init__(self, user, *args, **kwargs):
+        super(QuizAssignForm, self).__init__(*args, **kwargs)
+        self.fields['school_class'] = forms.ModelMultipleChoiceField(
+            queryset=TeacherProfile.objects.get(user=user).school_class
+        )

@@ -9,7 +9,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 from registrator.forms import StudentRegisterForm, StudentProfileForm, TeacherRegisterForm, TeacherProfileForm, \
-    LoginForm
+    LoginForm, SchoolClassForm, TeacherSchoolClassRegisterForm
+from registrator.models import SchoolClass, TeacherProfile
 
 
 class RegisterStudentView(TemplateView):
@@ -19,18 +20,34 @@ class RegisterStudentView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['student_form'] = StudentRegisterForm()
         context['student_profile_form'] = StudentProfileForm()
+        context['school_class_form'] = SchoolClassForm()
         return context
 
     @transaction.atomic
     def post(self, request):
         student_form = StudentRegisterForm(request.POST)
         student_profile_form = StudentProfileForm(request.POST)
+        school_class_form = SchoolClassForm(request.POST)
 
-        if student_form.is_valid() and student_profile_form.is_valid():
+        if student_form.is_valid() and student_profile_form.is_valid() and school_class_form.is_valid():
             student = student_form.save()
             student.groups.add(Group.objects.get(name__exact='students'))
             profile = student_profile_form.save(commit=False)
             profile.user = student
+            school_class = school_class_form.save(commit=False)
+            school_class_query = SchoolClass.objects.filter(
+                school__name=school_class.school.name
+            ).filter(
+                class_level=school_class.class_level
+            ).filter(
+                class_letter=school_class.class_level
+            )
+            if school_class_query:
+                school_class = school_class_query[0]
+            else:
+                school_class.save()
+
+            profile.school_class = school_class
             profile.save()
             login(request, student)
             return redirect('student-detail', pk=student.id)
@@ -72,6 +89,45 @@ class RegisterTeacherView(TemplateView):
         }
 
         return render(request, 'registrator/teacher.html', context)
+
+
+class SchoolClassRegisterView(TemplateView):
+    template_name = 'registrator/class-register.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['school_class_form'] = TeacherSchoolClassRegisterForm()
+        return context
+
+    @transaction.atomic
+    def post(self, request, pk):
+        school_class_form = TeacherSchoolClassRegisterForm(request.POST)
+
+        if school_class_form.is_valid():
+            teacher_profile = TeacherProfile.objects.get(user=request.user)
+            school_class = school_class_form.save(commit=False)
+            school_class_query = SchoolClass.objects.filter(
+                school__name=teacher_profile.school.name
+            ).filter(
+                class_level=school_class.class_level
+            ).filter(
+                class_letter=school_class.class_level
+            )
+            if school_class_query:
+                school_class = school_class_query[0]
+            else:
+                school_class.school = teacher_profile.school
+                school_class.save()
+            teacher_profile.school_class.add(school_class)
+            teacher_profile.save()
+
+            return redirect('teacher-detail', pk=request.user.id)
+
+        context = {
+            'school_class_form': TeacherSchoolClassRegisterForm(),
+        }
+
+        return render(request, 'registrator/class-register.html', context)
 
 
 # class UserLoginView(LoginView):

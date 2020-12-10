@@ -33,7 +33,7 @@ class Question(models.Model):
     quiz = models.ForeignKey(
         Quiz,
         on_delete=models.CASCADE,
-        #default=1000,
+        # default=1000,
         related_name='questions',
     )
     subject = models.CharField(max_length=11, choices=SUBJECT)
@@ -53,3 +53,18 @@ class Answer(models.Model):
 
     def __str__(self):
         return f'{self.text} => {"C" if self.is_correct else "NC"}'
+
+
+class StudentTest(models.Model):
+    student = models.ManyToManyField(User)
+    test = models.ManyToManyField(Quiz, related_name='tests')
+    is_completed = models.BooleanField(default=False)
+    score = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+
+    # def __str__(self):
+    #     student_name = self.student.get()
+    #     return f'{student_name}'
+
+class StudentTestAnswer(models.Model):
+    student_test = models.ManyToManyField(StudentTest)
+    answer = models.ManyToManyField(Answer)

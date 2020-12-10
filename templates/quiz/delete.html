@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% if answer %}
+            Сигурни ли сте, че изкате да изтриете следния отговор:
+            {{ answer.text }}
+
+        {% elif question %}
+            Сигурни ли сте, че изкате да изтриете следния въпрос:
+            {{ question.prompt }}
+        {% elif quiz %}
+           <p>Сигурни ли сте, че изкате да изтриете следният тест: </p>
+            <div>"{{ quiz.title }}"</div>
+        {% endif %}
+
+        <button type="submit">Delete</button>
+    </form>
+{% endblock %}

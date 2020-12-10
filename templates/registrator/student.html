@@ -1,16 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
 <form action="" method="post">
     {% csrf_token %}
     {{  student_form.as_p }}
     {{ student_profile_form.as_p }}
+    {{ school_class_form.as_p }}
     <button type="submit">Register</button>
 </form>
-
-</body>
-</html>
+{% endblock %}

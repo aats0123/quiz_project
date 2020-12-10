@@ -3,7 +3,8 @@
 {% block content %}
 <form method="post" action="">
     {% csrf_token %}
-    <p>Сигурни ли сте, че изкате да изтриете тест "{{ quiz.title }}"?</p>
+    <p>Сигурни ли сте, че изкате да изтриете следният тест: </p>
+    <div>"{{ quiz.title }}</div>
     <button type="submit">Delete</button>
 </form>
 {% endblock %}

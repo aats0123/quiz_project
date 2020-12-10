@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<form method="post" action="{% url 'question-create' pk %}">
+    <div>Тест:</div>
+    <div>{{ quiz.title }}</div>
+<form method="post" action="{% url 'question-create' quiz.id %}">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Create</button>

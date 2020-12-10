@@ -2,16 +2,27 @@
 {% load static %}
 {% block title %}Профил - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 {% block content %}
-<p>{{ user.first_name }} {{ user.last_name }}.</p>
-<p>Учител в училище {{ profile.school }}</p>
-<p>Предмет: {{ profile.subject}}</p>
-{% if not quizzes %}
-<p>Нямате създадени тестове.</p>
-{% else %}
-    Това са създадените от Вас тестове:
-    {% for quiz in quizzes %}
-        <div><a href="{% url 'quiz-detail' quiz.id %}">{{ quiz.title }}</a></div>
-    {% endfor %}
-{% endif %}
-<p>Създайте <a href="{% url 'quiz-create' %}">тест.</a></p>
+    <p>{{ user.first_name }} {{ user.last_name }}.</p>
+    <p>Учител в училище {{ profile.school }}</p>
+    <p>Предмет: {{ profile.subject }}</p>
+    {% if not quizzes %}
+        <p>Нямате създадени тестове.</p>
+    {% else %}
+        Това са създадените от Вас тестове:
+        {% for quiz in quizzes %}
+            <div><a href="{% url 'quiz-detail' quiz.id %}">{{ quiz.title }}</a></div>
+            <button type="button" value="DELETE"><a href="{% url 'quiz-delete' quiz.id %}">ИЗТРИЙ</a></button>
+            <button type="button" value="EDIT"><a href="{% url 'quiz-edit' quiz.id %}">Редактирай</a></button>
+        {% endfor %}
+    {% endif %}
+    <p><a href="{% url 'class-register' profile.user.id %}">Регистрирайте клас</a>, за да назначите тест</p>
+    <p>Създайте <a href="{% url 'quiz-create' %}">тест.</a></p>
+    <p>Създайте тест от <a href="{% url 'bulk-create' %}">текстов файл</a></p>
+    <div>
+        <a href="">Назначете тест</a>
+    </div>
+    <div>
+        <a href="">Прегледайте резултатите от назначените от Вас тестове</a>
+    </div>
+
 {% endblock %}

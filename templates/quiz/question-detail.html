@@ -5,13 +5,16 @@
     <h1>{{ question.title }}</h1>
     <p>Автор: {{ question.quiz.author.first_name }} {{ question.quiz.author.last_name }}</p>
     <p>Предмет: {{ question.subject }}</p>
+    <p>Test:</p>
+    <div><a href="{% url 'quiz-detail' question.quiz.id %}">{{ question.quiz.title }}</a></div>
+    <p>Въпрос: </p>
+    <div>{{ question.prompt }}</div>
     {% if not answers %}
         <p>Все още няма зададени отговори за този въпрос.</p>
     {% else %}
-        <p>Въпрос: </p>
-        <div>{{ question.prompt }}</div>
+
         <hr>
-        Този има следните възможни отговори:
+        Този въпрос има следните възможни отговори:
 
         {% for answer in answers %}
             {% if answer.is_correct %}
@@ -19,9 +22,10 @@
             {% else %}
                 <div>{{ answer.text }} - Неверен</div>
             {% endif %}
+            <div><a href="{% url 'answer-delete' answer.id %}">ИЗТРИЙ</a></div>
         {% endfor %}
     {% endif %}
     <hr>
-    <p>Добвете <a href="{% url 'answer-create' quiz_id=question.quiz.id question_id=question.id %}">отговор.</a></p>
+    <p>Добвете <a href="{% url 'answer-create' question_id=question.id %}">отговор.</a></p>
 
 {% endblock %}

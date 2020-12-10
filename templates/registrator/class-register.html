@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Quiz - Register Class {% endblock %}
+{% block content %}
+    <h2>Регистрирайте клас, за да можете да назначите тест</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ school_class_form.as_p }}
+    <button type="submit">Регистрирай</button>
+  </form>
+{% endblock %}
