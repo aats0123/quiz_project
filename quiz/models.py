@@ -56,15 +56,16 @@ class Answer(models.Model):
 
 
 class StudentTest(models.Model):
-    student = models.ManyToManyField(User)
-    test = models.ManyToManyField(Quiz, related_name='tests')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, default=None)
     is_completed = models.BooleanField(default=False)
-    score = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    score = models.DecimalField(max_digits=4, decimal_places=2, default=0.0)
 
     # def __str__(self):
     #     student_name = self.student.get()
     #     return f'{student_name}'
 
+
 class StudentTestAnswer(models.Model):
-    student_test = models.ManyToManyField(StudentTest)
-    answer = models.ManyToManyField(Answer)
+    student_test = models.ForeignKey(StudentTest, on_delete=models.DO_NOTHING, default=None)
+    answer = models.ForeignKey(Answer, on_delete=models.DO_NOTHING, default=None)

@@ -1,8 +1,96 @@
-body {
-    background-color: lightyellow;
+
+.home-link {
+    border-right: 1px solid rgba(255, 255, 255, .5);
 }
 
-span.helptext {
-
-    display: none;
+.custom-file-input.selected:lang(en)::after {
+    content: "" !important;
 }
+
+.custom-file {
+    overflow: hidden;
+}
+
+.custom-file-input {
+    white-space: nowrap;
+}
+
+.navbar-bottom-margin {
+    margin-bottom: 20px;
+}
+
+.card-header-bgcolor {
+    background-color: rgb(33, 37, 41);
+}
+/* Component: Well */
+.well {
+  overflow: hidden;
+  border-radius: 0;
+  margin-bottom: 30px;
+  padding: 1em;
+}
+.well .well-heading .controls {
+  position: absolute;
+  top: 10px;
+  right: 30px;
+}
+.well .well-body {
+  margin-top: 20px;
+  position: relative;
+  z-index: 3;
+}
+.well .well-image {
+  font-size: 90px;
+  line-height: 90px;
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 1;
+  color: rgba(0, 0, 0, 0.15);
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  -ms-transition: all 0.2s ease-in;
+  -o-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+.well.well-solid {
+  color: white;
+}
+.well:hover .well-image {
+  font-size: 60px;
+}
+.well-white {
+  background-color: white;
+  color: #454545;
+}
+.well-blue {
+  background-color: #2980b9;
+  color: white;
+}
+.well-light-blue {
+  background-color: #3498db;
+  /*color: white;*/
+}
+
+.mini-profile-widget .image-container .avatar {
+    width: 180px;
+    height: 180px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: white;
+    padding: 4px;
+    border: 1px solid #dddddd;
+}
+
+.btn-blue {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: white;
+}
+.btn-blue:hover,
+.btn-blue:visited {
+  background-color: #2980b9;
+  color: white;
+}
+

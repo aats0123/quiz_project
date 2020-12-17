@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{#<!doctype html>#}
+{#<html lang="en">#}
+{##}
+{#<head>#}
+{#  <!-- Required meta tags -->#}
+{#  <meta charset="utf-8">#}
+{#  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
+{##}
+{#  <!-- Bootstrap CSS -->#}
+{#  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">#}
+{##}
+{#  <title>Bootstrap 4 File Upload Input Example</title>#}
+
+{#  <style>#}
+{#    .custom-file-input.selected:lang(en)::after {#}
+{#      content: "" !important;#}
+{#    }#}
+{##}
+{#    .custom-file {#}
+{#      overflow: hidden;#}
+{#    }#}
+{##}
+{#    .custom-file-input {#}
+{#      white-space: nowrap;#}
+{#    }#}
+{#  </style>#}
+{#</head>#}
+{##}
+{#<body>#}
+{% block content %}
+  <div class="container">
+    <div class="input-group">
+      <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFileInput" aria-describedby="customFileInput">
+        <label class="custom-file-label" for="customFileInput">Select file</label>
+      </div>
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="customFileInput">Upload</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+      let name = document.getElementById("customFileInput").files[0].name;
+      let nextSibling = e.target.nextElementSibling
+      nextSibling.innerText = name
+    })
+  </script>
+{% endblock %}
+{#</body>#}
+{##}
+{#</html>#}

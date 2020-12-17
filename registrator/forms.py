@@ -21,6 +21,8 @@ class StudentRegisterForm(UserCreationForm):
         self.fields['first_name'].label = 'Име'
         self.fields['last_name'].label = 'Фамилия'
         self.fields['username'].label = 'Потребителско име'
+        self.fields['username'].help_text = 'Задължително поле, позволени са букви, цифри и @ /./ + / - / _ . Макс. дължина 150 символа'
+        # Required. 150 characters or fewer.Letters, digits and @ /./ + / - / _ only.
         self.fields['password1'].label = 'Парола'
         self.fields['password1'].help_text = ''
         self.fields['password2'].label = 'Потвърдете паролата'
@@ -47,6 +49,7 @@ class SchoolClassForm(forms.ModelForm):
         self.fields['school'].label = 'Училище'
         self.fields['class_level'].label = 'Клас'
         self.fields['class_letter'].label = 'Паралелка'
+
 
 class TeacherRegisterForm(UserCreationForm):
     class Meta:
@@ -94,7 +97,8 @@ class TeacherLoginForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(label='Потребителско име')
     password = forms.CharField(
         widget=forms.PasswordInput(),
+        label='Парола'
     )

@@ -1,7 +1,7 @@
 from django import forms
 
 from quiz.models import Quiz, Question, Answer, StudentTest
-from registrator.models import TeacherProfile
+from registrator.models import TeacherProfile, StudentProfile
 
 
 class QuizCreateForm(forms.ModelForm):
@@ -49,22 +49,64 @@ class AnswerCreateForm(forms.ModelForm):
         model = Answer
         exclude = ('question',)
 
-    # def __init__(self, user, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['question'] = forms.ModelChoiceField(queryset=Question.objects.filter(author=user))
-    def save(self, question_id):
+    def save(self, question_id=None):
         answer = super().save(commit=False)
         answer.question = Question.objects.get(id=question_id)
         answer.save()
+
 
 class QuizAssignForm(forms.ModelForm):
     # quiz = forms.ModelMultipleChoiceField()
     class Meta:
         model = StudentTest
-        exclude = ('is_compleated', 'score')
+        exclude = ('student', 'is_completed', 'score')
 
     def __init__(self, user, *args, **kwargs):
         super(QuizAssignForm, self).__init__(*args, **kwargs)
-        self.fields['school_class'] = forms.ModelMultipleChoiceField(
+        self.fields['school_class'] = forms.ModelChoiceField(
             queryset=TeacherProfile.objects.get(user=user).school_class
         )
+        self.fields['school_class'].label = 'Изберете клас'
+        self.fields['quiz'] = forms.ModelChoiceField(
+            queryset=Quiz.objects.filter(author=user)
+        )
+        self.fields['quiz'].label = 'Изберете тест'
+
+    def save(self, user=None):
+        school_class = self.cleaned_data['school_class']
+        quiz = self.cleaned_data['quiz']
+        student_profiles = StudentProfile.objects.filter(school_class=school_class)
+        students = [sp.user for sp in student_profiles]
+        for student in students:
+            student_test_query = StudentTest.objects.filter(student=student).filter(quiz=quiz)
+            if not student_test_query:
+                student_test = StudentTest(student=student, quiz=quiz)
+                student_test.save()
+            elif all([st.is_completed for st in student_test_query]):
+                student_test = StudentTest(student=student, quiz=quiz)
+                student_test.save()
+
+            else:
+                continue
+
+
+class TestQuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        exclude = ('title', 'description', 'subject', 'author')
+
+    def __init__(self, quiz=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        questions = Question.objects.filter(quiz=quiz)
+        for question in questions:
+            question_answers = Answer.objects.filter(question=question)
+            answers_texts = [answer.text for answer in question_answers]
+            zipped_answers = zip([answer.id for answer in question_answers], answers_texts)
+            self.fields[question.prompt] = forms.CharField(
+                widget=forms.RadioSelect(
+                    choices=list(zipped_answers),
+                    attrs={'id':question.id, 'name': str(question.id)}
+                ),
+            )
+
+

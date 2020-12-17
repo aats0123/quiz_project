@@ -2,24 +2,49 @@
 {% load static %}
 {% block title %}Quizee - Home{% endblock %}
 {% block content %}
-    <h1>Добре дошли в Quizeee!</h1>
-    <div>
-        Това е сайт за тестове по следните предмети:
-        <ul>
-            <li>Математика</li>
-            <li>Физика</li>
-            <li>История</li>
-            <li>География</li>
-        </ul>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4">Добре дошли в Quizeee!</h1>
+            <p class="lead">В Quizee можете да задавате или решавани тестове по няколко дисциплини от
+                средното образование.</p>
+            <hr class="my-4">
+            <p>За да работите с Quizeeе, Вашето училище трябва да е регистрирано чрез изпращане на емейл на адрес <a
+                    href="mailto:registration@quizee.com">registration@quizee.com</a></p>
+            <p>Ако сте <strong>учител</strong> и искате да възложите тест на Вашите ученицu, <a
+                    href="{% url 'register-teacher' %}">регистрирайте</a> се в Quizee, а след това
+                регистрирайте и класовете, на които преподавате.
+            </p>
+            <p>Ако сте <strong>ученик</strong> и имате зададен тест, може да се логнете и да отговорите на въпросите в
+                него.
+                Необходимо е първо да се <a href="{% url 'register-student' %}">регистрирате</a>, ако все още нямате регистрация.</p>
+            {#        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>#}
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-light">
+                        Регистрани училища:
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for school in schools %}
+                            <li class="list-group-item">{{ school.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header bg-dark text-light">
+                        Предмети, по които могат да бъдат задавани тестове:
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for subject in subjects %}
+                            <li class="list-group-item">{{ subject }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div>
-        За да създадете и възложите тест, е необходимо да се <a href="{% url 'register-teacher' %}">регистрирате</a> като учител.
-    </div>
-    <div>
-        За да отоворите на възложените Ви тестове, е необходимо да се <a href="{% url 'register-student' %}">регистрирате</a> като ученик.
-    </div>
-    <div>
-        Ако вече сте регистриран потребител, моля влезте в <a href="{% url 'login' %}">акаунта</a> си.
-    </div>
 {% endblock %}

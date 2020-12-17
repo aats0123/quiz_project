@@ -3,19 +3,23 @@ import xml
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.forms import formset_factory, modelformset_factory
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, FormView, DetailView, DeleteView
 from django.views.generic.base import View
 import xml.etree.ElementTree as xml_tree
 
-from quiz.forms import QuizCreateForm, QuestionCreateForm, AnswerCreateForm
-from quiz.models import Quiz, Question, Answer
-from registrator.models import TeacherProfile, StudentProfile
+from quiz.forms import QuizCreateForm, QuestionCreateForm, AnswerCreateForm, QuizAssignForm, TestQuizForm
+from quiz.models import Quiz, Question, Answer, StudentTest, SUBJECT, StudentTestAnswer
+from registrator.models import TeacherProfile, StudentProfile, School
 
 
 def render_home(request):
-    return render(request, 'quiz/home.html')
+    schools = School.objects.all()
+    subjects = [subject[0] for subject in SUBJECT]
+
+    return render(request, 'quiz/home.html', {'schools': schools, 'subjects': subjects})
 
 
 class StudentDetailView(DetailView):
@@ -25,7 +29,24 @@ class StudentDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         student_profile = StudentProfile.objects.get(user=self.request.user)
+        assigned_tests = StudentTest.objects.filter(student=self.request.user)
+        completed_tests = [test for test in assigned_tests if test.is_completed]
+        average_score = sum([test.score for test in completed_tests]) / len(completed_tests)
         context['profile'] = student_profile
+        context['assigned_tests_number'] = len(assigned_tests)
+        context['completed_test_number'] = len(completed_tests)
+        context['average_score'] = round(average_score, 2)
+        return context
+
+
+class StudentTestsView(DetailView):
+    model = User
+    template_name = 'quiz/student-tests.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        assigned_tests = StudentTest.objects.filter(student=self.request.user)
+        context['assigned_tests'] = assigned_tests
         return context
 
 
@@ -73,7 +94,7 @@ class QuizCreateView(FormView):
 @login_required
 def bulk_quiz_create_view(request):
     if request.method == 'GET':
-        return render(request, 'quiz/bulk-create.html')
+        return render(request, 'quiz/bulk.html')
 
     quiz_file = request.FILES['quiz-file']
     tree = xml_tree.parse(quiz_file)
@@ -97,9 +118,6 @@ def bulk_quiz_create_view(request):
             )
             answer.save()
     return redirect('teacher-detail', request.user.id)
-
-
-
 
 
 @login_required
@@ -187,6 +205,48 @@ def answer_delete_view(request, pk):
     answer.delete()
     return redirect('question-detail', question.id)
 
+
 @login_required
-def quiz_assign_view(request):
-    pass
+def quiz_assign_view(request, pk):
+    if request.method == 'GET':
+        form = QuizAssignForm(request.user)
+        context = {
+            'form': form,
+            'user': request.user
+        }
+        return render(request, 'quiz/quiz-assign.html', context)
+
+    form = QuizAssignForm(request.user, request.POST)
+    if form.is_valid():
+        form.save(request.user)
+        return redirect('teacher-detail', pk)
+
+    return render(request, 'quiz/quiz-assign.html', {'form': form, 'user': request.user})
+
+
+@login_required
+def test_take_view(request, test_id):
+    test = StudentTest.objects.get(id=test_id)
+    quiz = test.quiz
+    if request.method == 'GET':
+        form = TestQuizForm(quiz)
+        context = {
+            'quiz': quiz,
+            'form': form
+        }
+        return render(request, 'quiz/test-answer.html', context)
+    form = TestQuizForm(quiz, request.POST)
+    if form.is_valid():
+        form.save(commit=False)
+        correct_answers = 0
+        for answer_id in form.cleaned_data.values():
+            answer = Answer.objects.get(id=answer_id)
+            if answer.is_correct:
+                correct_answers += 1
+            student_test_answer = StudentTestAnswer(student_test=test, answer=answer)
+            student_test_answer.save()
+        score = (correct_answers / len(Question.objects.filter(quiz=quiz))) * 100
+        test.score = score
+        test.is_completed = True
+        test.save()
+        return redirect('student-detail', request.user.id)

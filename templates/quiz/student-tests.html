@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Профил - {{ user.first_name }} {{ user.last_name }}{% endblock %}
+{% block content %}
+
+    {% if  not assigned_tests %}
+        <div>Все още няма тестове за Вас!</div>
+    {% else %}
+        <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Предмет</th>
+            <th scope="col" >Учител</th>
+            <th scope="col" >Име на теста</th>
+            <th scope="col">Описане</th>
+            <th scope="col">Преминат</th>
+            <th scope="col">Резултат</th>
+            <th scope="col">Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for test in assigned_tests %}
+            <tr>
+            <td class="student-test">{{ test.quiz.subject }}</td>
+            <td class="student-test">{{ test.quiz.author.first_name|first|upper }}. {{ test.quiz.author.last_name }}</td>
+            <td class="student-test">{{ test.quiz.title }}</td>
+            <td class="student-test">{{ test.quiz.description }}</td>
+            <td class="student-test">todo</td>
+            {% if test.is_completed %}
+                <td class="student-test">{{ test.score }}</td>
+            {% else %}
+                <td class="student-test"><button><a href="{% url 'test-take' test.id %}">НАЧАЛО</a></button></td>
+            {% endif %}
+            <td class="student-test">todo</td>
+        {% endfor %}
+    {% endif %}
+</tr>
+</tbody>
+</table>
+{% endblock %}

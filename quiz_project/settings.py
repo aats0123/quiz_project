@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'quiz.apps.QuizConfig',
     'registrator.apps.AuthenticatorConfig',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

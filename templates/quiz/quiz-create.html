@@ -1,9 +1,22 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Create</button>
-</form>
+    <div class="container">
+        <h2 class="">Създаване на тест</h2>
+        <form method="post" action="" >
+            {% csrf_token %}
+                {% include 'base-form.html' with form=form %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-ok"></span> Създай
+                </button>
+
+            </div>
+        </form>
+    </div>
+{#<form method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_p }}#}
+{#    <button type="submit">Create</button>#}
+{#</form>#}
 {% endblock %}

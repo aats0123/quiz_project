@@ -1,14 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<p>I'm student</p>
-<p>My name is {{ user.first_name }} {{ user.last_name }}.</p>
-<p>{{ profile.school }}</p>
-<p>{{ profile.grade }}</p>
-<p>{{  profile.school_class }}</p>
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Профил - {{ user.first_name }} {{ user.last_name }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row row-cols-2 well well-light-blue mini-profile-widget">
+            <div class="col">
+                <div class="image-container">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png"
+                         class="avatar img-responsive" alt="avatar">
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 23rem;">
+                    <div class="card-header">
+                        Вашите резултати
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Общ брой тестове:
+                            <span class="badge badge-primary badge-pill">{{ assigned_tests_number }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Завършени тестове:
+                            <span class="badge badge-primary badge-pill">{{ completed_test_number }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Среден резултат:
+                            <span class="badge badge-danger badge-pill">{{ average_score }} %</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="details">
+                    <h4> {{ user.first_name }} {{ user.last_name }}</h4>
+                    <hr>
+                    <div></div>
+                    <div>Училище: {{ profile.school_class.school }}</div>
+                    <div>
+                        Клас: {{ profile.school_class.class_level }}-{{ profile.school_class.class_letter }}</div>
+                    <div>Емайл: {{ user.email }}</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

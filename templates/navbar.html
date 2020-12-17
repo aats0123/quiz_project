@@ -1,0 +1,64 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-bottom-margin">
+    <div class="navbar-collapse collapse w-100 order-0 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link home-link" href="{% url 'quiz-home' %}">Quizeee</a>
+            </li>
+            {% if user.groups.all.0.name == 'teachers' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'teacher-detail' user.id %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+
+
+            {% elif user.groups.all.0.name == 'students' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'student-tests' user.id %}">Тестове</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'student-detail' user.id %}">Профил</a>
+                </li>
+            {% else %}
+                <a class="nav-link" href="{% url 'quiz-home' %}"></a>
+            {% endif %}
+
+
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+        </ul>
+    </div>
+
+
+    {#        <div class="mx-auto order-1">#}
+    {#        <a class="navbar-brand mx-auto" href="#">Navbar 2</a>#}
+    {#            <span class="navbar-text mx-auto">Здравейте, {{ user.first_name }}! </span>#}
+    {##}
+    {#            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">#}
+    {#                <span class="navbar-toggler-icon"></span>#}
+    {#            </button>#}
+    {#        </div>#}
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_anonymous %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+            {% else %}
+                <li class="nav-item active">
+                    <span class="navbar-text">Здравейте, {{ user.first_name }}! </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>

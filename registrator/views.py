@@ -18,9 +18,11 @@ class RegisterStudentView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['student_form'] = StudentRegisterForm()
-        context['student_profile_form'] = StudentProfileForm()
-        context['school_class_form'] = SchoolClassForm()
+        forms = (StudentRegisterForm(),StudentProfileForm(), SchoolClassForm())
+        # context['student_form'] = StudentRegisterForm()
+        # context['student_profile_form'] = StudentProfileForm()
+        # context['school_class_form'] = SchoolClassForm()
+        context['forms'] = forms
         return context
 
     @transaction.atomic
@@ -40,7 +42,7 @@ class RegisterStudentView(TemplateView):
             ).filter(
                 class_level=school_class.class_level
             ).filter(
-                class_letter=school_class.class_level
+                class_letter=school_class.class_letter
             )
             if school_class_query:
                 school_class = school_class_query[0]
@@ -61,12 +63,14 @@ class RegisterStudentView(TemplateView):
 
 
 class RegisterTeacherView(TemplateView):
-    template_name = 'registrator/teacher.html'
+    # template_name = 'registrator/teacher.html'
+    template_name = 'registrator/student.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['teacher_form'] = TeacherRegisterForm()
-        context['teacher_profile_form'] = TeacherProfileForm()
+        # context['teacher_form'] = TeacherRegisterForm()
+        # context['teacher_profile_form'] = TeacherProfileForm()
+        context['forms'] = (TeacherRegisterForm(), TeacherProfileForm())
         return context
 
     @transaction.atomic
@@ -106,12 +110,14 @@ class SchoolClassRegisterView(TemplateView):
         if school_class_form.is_valid():
             teacher_profile = TeacherProfile.objects.get(user=request.user)
             school_class = school_class_form.save(commit=False)
+            class_level = school_class.class_level
+            class_letter = school_class.class_letter
             school_class_query = SchoolClass.objects.filter(
-                school__name=teacher_profile.school.name
+                school=teacher_profile.school
             ).filter(
                 class_level=school_class.class_level
             ).filter(
-                class_letter=school_class.class_level
+                class_letter=school_class.class_letter
             )
             if school_class_query:
                 school_class = school_class_query[0]

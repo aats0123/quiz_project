@@ -1,11 +1,27 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{  student_form.as_p }}
-    {{ student_profile_form.as_p }}
-    {{ school_class_form.as_p }}
-    <button type="submit">Register</button>
-</form>
+    <div class="container">
+        <h2 class="">Регистрационна форма</h2>
+        <form method="post" action="" >
+            {% csrf_token %}
+            {% for form in forms %}
+                {% include 'base-form.html' with form=form %}
+            {% endfor %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-ok"></span> Регистрирай се
+                </button>
+
+            </div>
+        </form>
+    </div>
+    {#<form action="" method="post">#}
+    {#    {% csrf_token %}#}
+    {#    {{  student_form.as_p }}#}
+    {#    {{ student_profile_form.as_p }}#}
+    {#    {{ school_class_form.as_p }}#}
+    {#    <button type="submit">Register</button>#}
+    {#</form>#}
 {% endblock %}

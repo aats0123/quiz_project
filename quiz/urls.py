@@ -2,11 +2,13 @@ from django.urls import path
 
 from quiz.views import render_home, QuizCreateView, StudentDetailView, TeacherDetailView, question_create_view, \
     QuizDetailView, QuestionDetailView, answer_create_view, quiz_delete_view, quiz_edit_view, question_delete_view, \
-    question_edit_view, answer_delete_view, bulk_quiz_create_view, quiz_assign_view
+    question_edit_view, answer_delete_view, bulk_quiz_create_view, quiz_assign_view, test_take_view, StudentTestsView
 
 urlpatterns = [
     path('', render_home, name='quiz-home'),
     path('student/<int:pk>/', StudentDetailView.as_view(), name='student-detail'),
+    path('student/tests/<int:pk>', StudentTestsView.as_view(), name='student-tests'),
+    path('student/test/<int:test_id>', test_take_view, name='test-take'),
     path('teacher/<int:pk>/', TeacherDetailView.as_view(), name='teacher-detail'),
     path('teacher/<int:pk>/assign-quiz', quiz_assign_view, name='quiz-assign'),
     path('quiz/create/', QuizCreateView.as_view(), name='quiz-create'),
