@@ -14,6 +14,8 @@ import os
 from pathlib import Path
 
 # Dealing with environment using django-environ
+from django.urls import reverse_lazy
+
 env = environ.Env()
 # reading .env file
 environ.Env.read_env()
@@ -132,3 +134,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# To automatically redirects to login page, if action requires login,
+# i.e. views have @login_require or LoginRequiredMixin
+LOGIN_URL = reverse_lazy('login')

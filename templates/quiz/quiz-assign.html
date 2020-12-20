@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <div>Задайте тест</div>
-<form method="post" action="">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Задай</button>
-</form>
+    <div class="container w-25">
+    <h2>Задайте тест</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% include 'base-form.html' with form=form %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-ok">Задай</span>
+                </button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

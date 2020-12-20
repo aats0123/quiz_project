@@ -3,20 +3,14 @@
 {% block content %}
     <div class="container">
         <h2 class="">Създаване на тест</h2>
-        <form method="post" action="" >
+        <form method="post" action="">
             {% csrf_token %}
-                {% include 'base-form.html' with form=form %}
+            {% include 'base-form.html' with form=form %}
             <div class="form-group">
                 <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-ok"></span> Създай
+                    <span class="glyphicon glyphicon-ok"></span> ГОТОВО
                 </button>
-
             </div>
         </form>
     </div>
-{#<form method="post">#}
-{#    {% csrf_token %}#}
-{#    {{ form.as_p }}#}
-{#    <button type="submit">Create</button>#}
-{#</form>#}
 {% endblock %}

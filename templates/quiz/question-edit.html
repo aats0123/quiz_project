@@ -2,18 +2,13 @@
 {% load static %}
 {% block content %}
     <div class="container">
-        {% if form.instance.id %}
             <h2 class="">Редактиране на въпрос към тест "{{ question.quiz.title }}"</h2>
-            {% else %}
-            <h2 class="">Добавяне на въпрос към тест "{{ quiz.title }}"</h2>
-        {% endif %}
-        <form method="post" action="">
+        <form method="post" action="{% url 'question-edit' question.id %}">
             {% csrf_token %}
             {% include 'base-form.html' with form=form %}
             <div class="form-group">
                 <button type="submit" class="btn btn-success">
-                    <span class="glyphicon glyphicon-ok"></span>
-                    {% if form.instance.id %}Промени{% else %}Добави{% endif %}
+                    <span class="glyphicon glyphicon-ok">Промени</span>
                 </button>
             </div>
         </form>

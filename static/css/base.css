@@ -60,7 +60,7 @@
   font-size: 60px;
 }
 .well-white {
-  background-color: white;
+  background-color: lightgrey;
   color: #454545;
 }
 .well-blue {
@@ -94,3 +94,6 @@
   color: white;
 }
 
+.bg-danger {
+    background-color: lightcoral;
+}

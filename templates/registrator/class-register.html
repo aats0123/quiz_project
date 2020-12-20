@@ -2,10 +2,22 @@
 {% load static %}
 {% block title %} Quiz - Register Class {% endblock %}
 {% block content %}
+     <div class="container w-25">
     <h2>Регистрирайте клас, за да можете да назначите тест</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ school_class_form.as_p }}
-    <button type="submit">Регистрирай</button>
-  </form>
+        <form method="post">
+            {% csrf_token %}
+            {% include 'base-form.html' with form=school_class_form %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">
+                    <span class="glyphicon glyphicon-ok">Регистрирай</span>
+                </button>
+            </div>
+        </form>
+    </div>
+{#    <h2>Регистрирайте клас, за да можете да назначите тест</h2>#}
+{#  <form method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ school_class_form.as_p }}#}
+{#    <button type="submit">Регистрирай</button>#}
+{#  </form>#}
 {% endblock %}

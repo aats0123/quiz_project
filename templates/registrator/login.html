@@ -6,11 +6,12 @@
 
     <div class="container">
         <h2>Login</h2>
-        <form method="post" class="">
-            {#  <input type="hidden" name="return_url" value="{{ request.GET.next }}" />#}
-            {#    {% csrf_token %}#}
-            {#    {{ form.as_p }}#}
-            {#    <button type="submit">Login</button>#}
+        <form method="post" class="" >
+              <input type="hidden" name="return_url" value="{{ request.GET.next }}" />
+{#            {% csrf_token %}#}
+{#                {{ form.as_p }}#}
+{#                <button type="submit">Login</button>#}
+
             {% csrf_token %}
             {% include 'base-form.html' with form=form %}
             <div class="form-group">
@@ -18,9 +19,10 @@
                     <span class="glyphicon glyphicon-ok"></span>Login
                 </button>
             </div>
-            <p>Регистрирайте се като <a href="{% url 'register-student' %}?next={{ request.GET.next }}">ученик</a></p>
-            <p>Регистрирайте се като <a href="{% url 'register-teacher' %}?next={{ request.GET.next }}">учител</a></p>
+
         </form>
+        <p>Регистрирайте се като <a href="{% url 'register-student' %}?next={{ request.GET.next }}">ученик</a></p>
+        <p>Регистрирайте се като <a href="{% url 'register-teacher' %}?next={{ request.GET.next }}">учител</a></p>
     </div>
 
 {% endblock %}

@@ -1,55 +1,66 @@
 {% extends 'base.html' %}
 {% load static %}
-{#<!doctype html>#}
-{#<html lang="en">#}
-{##}
-{#<head>#}
-{#  <!-- Required meta tags -->#}
-{#  <meta charset="utf-8">#}
-{#  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
-{##}
-{#  <!-- Bootstrap CSS -->#}
-{#  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">#}
-{##}
-{#  <title>Bootstrap 4 File Upload Input Example</title>#}
 
-{#  <style>#}
-{#    .custom-file-input.selected:lang(en)::after {#}
-{#      content: "" !important;#}
-{#    }#}
-{##}
-{#    .custom-file {#}
-{#      overflow: hidden;#}
-{#    }#}
-{##}
-{#    .custom-file-input {#}
-{#      white-space: nowrap;#}
-{#    }#}
-{#  </style>#}
-{#</head>#}
-{##}
-{#<body>#}
 {% block content %}
-  <div class="container">
-    <div class="input-group">
-      <div class="custom-file">
-        <input type="file" class="custom-file-input" id="customFileInput" aria-describedby="customFileInput">
-        <label class="custom-file-label" for="customFileInput">Select file</label>
-      </div>
-      <div class="input-group-append">
-        <button class="btn btn-primary" type="button" id="customFileInput">Upload</button>
-      </div>
-    </div>
-  </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                Зареждане на тест от файл
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Формат на прикачения файл</h5>
+                <p class="card-text">Файлът трябва да форматиран по специален начин, наподобявящ xml.</p>
+                Тагът <strong><em>quiz</em></strong>  съдържа целия тест, като атрибутът <strong><em>title</em></strong> определя неговото име.
+                Съответно, <strong><em>question</em></strong> и <strong><em>prompt</em></strong> определят въпрос към теста,
+                с <strong><em>answer</em></strong> са означени отговорите към всeки въпрос, акто атрибута <strong><em>correct</em> </strong>определя
+                дали отговора е верен (<strong>YES</strong>) или не (<strong>NO</strong>).
+                <hr>
+                <div  class="font-weight-bold">
+                    <code style="line-height: 0.5rem">
+                        <p>&lt;quiz title="Континенти"&gt;</p>
+                        <p>&lt;question prompt="Кой е най-големият континент?"&gt;</p>
+                        <p>&lt;answer correct="YES"&gt;Америка&lt;/answer&gt;</p>
+                        <p><&lt;answer correct="NO">Европа&lt;/answer&gt;</p>
+                        <p>&lt;answer correct="NO">Азия&lt;/answer&gt;</p>
+                        <p>&lt;answer correct="NO">Африка&lt;/answer&gt;</p>
+                        <p>&lt;/question&gt;</p>
+                        <p>&lt;question prompt="Кой континент е с най-многобройно население?"&gt;</p>
+                        <p>&lt;answer correct="NO"&gt;Америка&lt;/answer&gt;</p>
+                        <p>&lt;answer correct="NO"&gt;Европа&lt;/answer&gt;</p>
+                        <p>&lt;answer correct="NO"&gt;Азия&lt;/answer&gt;</p>
+                        <p>&lt;answer correct="NO"&gt;Австралия&lt;/answer&gt;</p>
+                        <p>&lt;/question&gt;</p>
+                        <p>&lt;/quiz&gt;</p>
+                    </code>
+                </div>
+                <hr>
+                Можете да копирате съдържанието от примера в текстов файл, да попълните  полетата с Вашите стойности и да ъплоуднете файла на сървъра.
+                <br>
+                <br>
+                <form method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="input-group">
 
-  <script>
-    document.querySelector('.custom-file-input').addEventListener('change', function (e) {
-      let name = document.getElementById("customFileInput").files[0].name;
-      let nextSibling = e.target.nextElementSibling
-      nextSibling.innerText = name
-    })
-  </script>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="quiz-file"
+                                   aria-describedby="customFileInput"
+                                   name="quiz-file">
+                            <label class="custom-file-label" for="quiz-file">Изберета файл</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit" id="customFileInput">Зареди</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+            let name = document.getElementById("quiz-file").files[0].name;
+            let nextSibling = e.target.nextElementSibling
+            nextSibling.innerText = name
+        })
+    </script>
 {% endblock %}
-{#</body>#}
-{##}
-{#</html>#}

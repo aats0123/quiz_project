@@ -2,30 +2,57 @@
 {% load static %}
 {% block title %}Въпрос "{{ question.prompt }}"{% endblock %}
 {% block content %}
-    <h1>{{ question.title }}</h1>
-    <p>Автор: {{ question.quiz.author.first_name }} {{ question.quiz.author.last_name }}</p>
-    <p>Предмет: {{ question.subject }}</p>
-    <p>Test:</p>
-    <div><a href="{% url 'quiz-detail' question.quiz.id %}">{{ question.quiz.title }}</a></div>
-    <p>Въпрос: </p>
-    <div>{{ question.prompt }}</div>
-    {% if not answers %}
-        <p>Все още няма зададени отговори за този въпрос.</p>
-    {% else %}
+    <div class="container">
+        <h3 class="text-center">Име на теста: {{ question.quiz.title }}</h3>
+        <ul class="list-group list-group-horizontal d-flex flex-row justify-content-between border-secondary-2">
+            <li class="list-group-item border-0">Въпрос: {{ question.prompt }}</li>
+            <li class="list-group-item border-0">
+                Автор: {{ question.quiz.author.first_name }} {{ question.quiz.author.last_name }}</li>
+            <li class="list-group-item border-0">Предмет: {{ question.quiz.subject|lower }}</li>
+            <li class="list-group-item border border-info">Добвете
+                <span class="badge badge-info badge-pill">
+                             <a href="{% url 'answer-create' question_id=question.id %}" class="text-light">отговор</a>
+                        </span>
+            </li>
+        </ul>
 
-        <hr>
-        Този въпрос има следните възможни отговори:
-
-        {% for answer in answers %}
+        <ul class="list-group text-light" style="margin-top: 1em;">
+            <li class="list-group-item disabled bg-light" aria-disabled="true">{{ question.prompt }}</li>
+            {% for answer in answers %}
             {% if answer.is_correct %}
-                <div>{{ answer.text }} - <strong>ВЕРЕН</strong></div>
+            <li class="list-group-item bg-success d-flex flex-row justify-content-between">
+                {{ answer.text }}
+                <a href="{% url 'answer-delete' answer.id %}"
+                                                    class="btn btn-light btn-sm active" role="button">Изтрий</a>
+{#               <a href="{% url 'answer-delete' answer.id %}">ИЗТРИЙ</a>#}
+            </li>
             {% else %}
-                <div>{{ answer.text }} - Неверен</div>
+                 <li class="list-group-item bg-danger d-flex flex-row justify-content-between">
+                     {{ answer.text }}
+                      <a href="{% url 'answer-delete' answer.id %}"
+                                                    class="btn btn-light btn-sm active" role="button">Изтрий</a>
+{#                 <a href="{% url 'answer-delete' answer.id %}">ИЗТРИЙ</a>#}
+                 </li>
+
             {% endif %}
-            <div><a href="{% url 'answer-delete' answer.id %}">ИЗТРИЙ</a></div>
-        {% endfor %}
-    {% endif %}
-    <hr>
-    <p>Добвете <a href="{% url 'answer-create' question_id=question.id %}">отговор.</a></p>
+          {% endfor %}
+        </ul>
+
+{#        <div class="list-group">#}
+{#            <a href="#" class="list-group-item list-group-item-action list-group-item-dark">{{ question.prompt }}</a>#}
+{#            {% for answer in answers %}#}
+{#                <a href="#" class="list-group-item list-group-item-action list-group-item-primary">{{ answer.text }}#}
+{#                    {% if answer.is_correct %}#}
+{#                        <span class="badge badge-success badge-pill">Верен</span>#}
+{#                    {% else %}#}
+{#                        <span class="badge badge-danger badge-pill">Грешен</span>#}
+{#                    {% endif %}#}
+{#                    <a href="{% url 'answer-delete' answer.id %}">ИЗТРИЙ</a>#}
+{#                </a>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{##}
+{#    </div>#}
+
 
 {% endblock %}

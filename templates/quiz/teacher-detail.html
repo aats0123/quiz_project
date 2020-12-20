@@ -3,27 +3,104 @@
 {% block title %}Профил - {{ user.first_name }} {{ user.last_name }}{% endblock %}
 {% block content %}
     <div class="container">
-        <p>{{ user.first_name }} {{ user.last_name }}.</p>
-        <p>Учител в училище {{ profile.school }}</p>
-        <p>Предмет: {{ profile.subject }}</p>
-        {% if not quizzes %}
-            <p>Нямате създадени тестове.</p>
-        {% else %}
-            Това са създадените от Вас тестове:
-            {% for quiz in quizzes %}
-                <div><a href="{% url 'quiz-detail' quiz.id %}">{{ quiz.title }}</a></div>
-                <button type="button" value="DELETE"><a href="{% url 'quiz-delete' quiz.id %}">ИЗТРИЙ</a></button>
-                <button type="button" value="EDIT"><a href="{% url 'quiz-edit' quiz.id %}">Редактирай</a></button>
-            {% endfor %}
-        {% endif %}
-        <p><a href="{% url 'class-register' profile.user.id %}">Регистрирайте клас</a>, за да назначите тест</p>
-        <p>Създайте <a href="{% url 'quiz-create' %}">тест.</a></p>
-        <p>Създайте тест от <a href="{% url 'bulk-create' %}">текстов файл</a></p>
-        <div>
-            <a href="{% url 'quiz-assign' profile.user.id %}">Назначете тест</a>
-        </div>
-        <div>
-            <a href="">Прегледайте резултатите от назначените от Вас тестове</a>
+        <div class="row row-cols-2 well well-white mini-profile-widget">
+            <div class="col">
+                <div class="image-container">
+                    <img src="https://png.pngitem.com/pimgs/s/287-2875482_q-icon-png-transparent-png.png"
+                         class="avatar img-responsive" alt="avatar">
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 23rem;">
+                    <div class="card-header">
+                        Регистрирани класове:
+                        <span class="badge badge-primary badge-pill">
+                            {% if school_classes %}
+                                {{ school_classes | join:', ' }}
+                            {% else %}
+                                Няма регистрирани
+                            {% endif %}
+                        </span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'class-register' profile.user.id %}">Регистриране на клас</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'quiz-create' %}">Създаване на тест</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'bulk-create' %}">Създаване на тест от файл</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'quiz-assign' profile.user.id %}">Задаване на тест</a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{% url 'assigned-quizzes' %}">Зададени тестове</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col">
+                <div class="details">
+                    <h4> {{ user.first_name }} {{ user.last_name }}</h4>
+                    <hr>
+                    <div></div>
+                    <div><span class="badge badge-danger badge-pill"
+                               style="width: 10em; margin-right: 1em">Училище: </span> {{ profile.school }}
+                    </div>
+                    <div>
+                        <span class="badge badge-danger badge-pill"
+                              style="width: 10em; margin-right: 1em">Предмет: </span> {{ profile.subject }}</div>
+                    <div><span class="badge badge-danger badge-pill"
+                               style="width: 10em; margin-right: 1em">Емайл: </span> {{ user.email }}</div>
+
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="container">
+    <h3 class="text-center">Вашите тестове</h3>
+        {% if not quizzes %}
+            <div>Все още нямате създадени тестове!</div>
+        {% else %}
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Име на тест</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Брой въпроси</th>
+                    <th scope="col">Редактирай</th>
+                    <th scope="col">Изтрий</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for quiz in quizzes %}
+                    <tr>
+                        <td class="student-test"><a href="{% url 'quiz-detail' quiz.id %}">{{ quiz.title }}</a></td>
+                        <td class="student-test">{{ quiz.description|truncatechars:50 }}</td>
+                        <td class="student-test">{{ quiz.questions.all| length }}</td>
+                        <td class="student-test"><a href="{% url 'quiz-edit' quiz.id %}"
+                                                    class="btn btn-warning btn-sm active" role="button">Редактирай</a>
+                        </td>
+                        <td class="student-test"><a href="{% url 'quiz-delete' quiz.id %}"
+                                                    class="btn btn-danger btn-sm active" role="button">Изтрий</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+
+    </div>
 {% endblock %}
+{#        <p>Създайте тест от <a href="{% url 'bulk-create' %}">текстов файл</a></p>#}
+{#        <div>#}
+{#        </div>#}
+{#        <div>#}
+{#            <a href="">Прегледайте резултатите от назначените от Вас тестове</a>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}

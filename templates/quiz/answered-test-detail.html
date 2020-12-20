@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Test "{{ quiz.title }}"{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="card">
+
+            <div class="card-header">
+                Това са Вашите отговори на въпросите от тест:
+                "{{ quiz.title }}"
+            </div>
+            {% for test_answer in test_answers %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>Въпрос: {{ test_answer.answer.question.prompt }}</div>
+                        <ul class="list-group w-50">
+                            {% for answer in test_answer.answer.question.answers.all %}
+                                {% if answer.id == test_answer.answer.id and not test_answer.answer.is_correct %}
+                                    <li class="list-group-item bg-danger text-center"> {{ answer.text }}</li>
+                                {% elif answer.is_correct %}
+                                    <li class="list-group-item bg-success text-center"> {{ answer.text }}</li>
+                                {% else %}
+                                    <li class="list-group-item text-center"> {{ answer.text }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

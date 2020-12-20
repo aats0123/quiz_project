@@ -1,16 +1,18 @@
+from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Group, User
 from django.contrib.auth.views import LoginView
 from django.db import transaction
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, UpdateView
 
 from registrator.forms import StudentRegisterForm, StudentProfileForm, TeacherRegisterForm, TeacherProfileForm, \
     LoginForm, SchoolClassForm, TeacherSchoolClassRegisterForm
-from registrator.models import SchoolClass, TeacherProfile
+from registrator.models import SchoolClass, TeacherProfile, StudentProfile
 
 
 class RegisterStudentView(TemplateView):
@@ -18,7 +20,7 @@ class RegisterStudentView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        forms = (StudentRegisterForm(),StudentProfileForm(), SchoolClassForm())
+        forms = (StudentRegisterForm(), StudentProfileForm(), SchoolClassForm())
         # context['student_form'] = StudentRegisterForm()
         # context['student_profile_form'] = StudentProfileForm()
         # context['school_class_form'] = SchoolClassForm()
@@ -53,14 +55,66 @@ class RegisterStudentView(TemplateView):
             profile.save()
             login(request, student)
             return redirect('student-detail', pk=student.id)
-
+        forms = (StudentRegisterForm(self.request.POST), StudentProfileForm(self.request.POST),
+                 SchoolClassForm(self.request.POST))
         context = {
-            'student_form': StudentRegisterForm(),
-            'student_profile_form': StudentProfileForm(),
+            'forms': forms,
         }
 
         return render(request, 'registrator/student.html', context)
 
+
+# # class StudentEditView(UpdateView, LoginRequiredMixin):
+# #     model = User
+# #     form_class = StudentRegisterForm
+# #     template_name = 'registrator/student.html'
+# #
+# #     def get_context_data(self, **kwargs):
+# #         context = super().get_context_data(**kwargs)
+# #         forms = (StudentRegisterForm(), StudentProfileForm())
+# #         # context['student_form'] = StudentRegisterForm()
+# #         # context['student_profile_form'] = StudentProfileForm()
+# #         # context['school_class_form'] = SchoolClassForm()
+# #         context['forms'] = forms
+# #         return context
+#     # def get_queryset(self):
+#     #     pass
+#
+# def student_edit_view(request, pk):
+#     student = User.objects.get(id=pk)
+#     student_profile = StudentProfile.objects.get(user=student)
+#     school_class = student_profile.school_class
+#
+#
+#     if request.method == 'GET':
+#         student_form = StudentRegisterForm(instance=student)
+#         school_class_form = SchoolClassForm(initial={
+#             'school': student_profile.school_class.school,
+#             'class_level': student_profile.school_class.class_level,
+#             'class_letter': student_profile.school_class.class_letter
+#         }
+#         )
+#         context = {'forms': (student_form, school_class_form)}
+#         return render(request, 'registrator/student.html', context)
+#     initials = {
+#         'first_name': request.POST['first_name'],
+#         'last_name': request.POST['last_name'],
+#         'username': request.POST['username'],
+#         'email': request.POST['email'],
+#         'school_id': request.POST['school'],
+#     }
+
+    # student_form = StudentRegisterForm(request.POST, instance=student)
+    # student_profile_form = StudentRegisterForm(request.POST, instance=student_profile)
+    # school_class_form = SchoolClassForm(request.POST, instance=school_class)
+    # x=6
+    # if student_form.ch
+    # if student_form.is_valid() and student_profile_form.is_valid() and school_class_form.is_valid():
+    #     student_form.save(commit=False)
+    #     student_profile_form.save(commit=False)
+    #     school_class_form.save(commit=False)
+    #     x=5
+    #     return redirect('student-detail', pk)
 
 class RegisterTeacherView(TemplateView):
     # template_name = 'registrator/teacher.html'
@@ -88,8 +142,7 @@ class RegisterTeacherView(TemplateView):
             return redirect('teacher-detail', pk=teacher.id)
 
         context = {
-            'teacher_form': TeacherRegisterForm(),
-            'teacher_profile_form': StudentProfileForm(),
+            'forms': (TeacherRegisterForm(request.POST), TeacherProfileForm(request.POST)),
         }
 
         return render(request, 'registrator/teacher.html', context)
@@ -169,9 +222,16 @@ def login_user(request):
                     return_url = RETURN_URLS[user_group_name]
                 login(request, user)
                 return redirect(return_url, pk=user.id)
+            else:
+                messages.warning(request, "The username  or passsword is icorrect ")
+                context = {
+                    'form': LoginForm(request.POST),
+                    'error': 'User name or password incorrect!'
+                }
+                return render(request, 'registrator/login.html', context)
 
         context = {
-            'login_form': login_form,
+            'form': LoginForm(request.POST),
         }
 
         return render(request, 'registrator/login.html', context)

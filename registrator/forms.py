@@ -38,6 +38,16 @@ class StudentProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+# class StudentUpdateForm(forms.ModelForm):
+#     class Meta:
+#         model = StudentProfile
+#         fields = ('first_name', 'last_name', 'username', 'email')
+#
+#     def __init__(self, user=None, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         student_profile = StudentProfile.objects.get(user=self.user)
+#         self.fields['']
+
 
 class SchoolClassForm(forms.ModelForm):
     class Meta:
@@ -88,6 +98,11 @@ class TeacherSchoolClassRegisterForm(forms.ModelForm):
     class Meta:
         model = SchoolClass
         exclude = ('school',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['class_level'].label = 'Клас'
+        self.fields['class_letter'].label = 'Паралелка'
 
 
 class TeacherLoginForm(forms.ModelForm):

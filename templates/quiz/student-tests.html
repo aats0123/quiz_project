@@ -10,8 +10,8 @@
         <thead class="thead-dark">
         <tr>
             <th scope="col">Предмет</th>
-            <th scope="col" >Учител</th>
-            <th scope="col" >Име на теста</th>
+            <th scope="col">Учител</th>
+            <th scope="col">Име на теста</th>
             <th scope="col">Описане</th>
             <th scope="col">Преминат</th>
             <th scope="col">Резултат</th>
@@ -23,13 +23,20 @@
             <tr>
             <td class="student-test">{{ test.quiz.subject }}</td>
             <td class="student-test">{{ test.quiz.author.first_name|first|upper }}. {{ test.quiz.author.last_name }}</td>
-            <td class="student-test">{{ test.quiz.title }}</td>
+            {% if test.is_completed %}
+                <td class="student-test"><a href="{% url 'test-answers' test.id %}">{{ test.quiz.title }}</a>
+                </td>
+            {% else %}
+                <td class="student-test">{{ test.quiz.title }}</td>
+            {% endif %}
             <td class="student-test">{{ test.quiz.description }}</td>
             <td class="student-test">todo</td>
             {% if test.is_completed %}
                 <td class="student-test">{{ test.score }}</td>
             {% else %}
-                <td class="student-test"><button><a href="{% url 'test-take' test.id %}">НАЧАЛО</a></button></td>
+                <td class="student-test">
+                    <button><a href="{% url 'test-take' test.id %}">НАЧАЛО</a></button>
+                </td>
             {% endif %}
             <td class="student-test">todo</td>
         {% endfor %}

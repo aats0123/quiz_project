@@ -2,23 +2,50 @@
 {% load static %}
 {% block title %}Test "{{ quiz.title }}"{% endblock %}
 {% block content %}
-    <a href="{% url 'teacher-detail' quiz.author_id %}">Home</a>
-<h1>{{ quiz.title }}</h1>
-<p>Автор: {{ quiz.author.first_name }} {{ quiz.author.last_name }}</p>
-<p>Предмет: {{ quiz.subject }}</p>
-{% if not questions %}
-<p>Все още няма зададени въпроси за този тест.</p>
-{% else %}
-    Този тест съдържа следните въпроси:
-    {% for question in questions %}
-        <div>
-            <div><a href="{% url 'question-detail' question.id %}">{{ question.prompt }}</a></div>
-            <div><button><a href="{% url 'question-delete' question.id %}">ИЗТРИЙ</a></button></div>
-        </div>
-
-    {% endfor %}
-{% endif %}
-    <input type="hidden" name="quiz_id" value="{{ quiz.id }}" />
-<p>Добвете <a href="{% url 'question-create' pk=quiz.id%}">въпрос.</a></p>
-
+    <div class="container">
+        <h3 class="text-center">Име на теста: {{ quiz.title }}</h3>
+        <ul class="list-group list-group-horizontal d-flex flex-row justify-content-between border-secondary-2">
+            <li class="list-group-item border-0">Tест: {{ quiz.title }}</li>
+            <li class="list-group-item border-0">Автор: {{ quiz.author.first_name }} {{ quiz.author.last_name }}</li>
+            <li class="list-group-item border-0">Предмет: {{ quiz.subject|lower }}</li>
+            <li class="list-group-item border border-info">Добвете
+                <span class="badge badge-info badge-pill">
+                             <a href="{% url 'question-create' pk=quiz.id %}" class="text-light">въпрос</a>
+                        </span>
+            </li>
+        </ul>
+    </div>
+    {% if not questions %}
+        <div>Все още няма създадени въпроси към този тест!</div>
+    {% else %}
+        <table class="table table-hover" style="margin-top: 1em">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Въпрос</th>
+                <th scope="col">Брой отговори</th>
+                <th scope="col">Редакция</th>
+                <th scope="col">Изтриване</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for question in questions %}
+                <tr>
+                    <td class="student-test"><a href="{% url 'question-detail' question.id %}">{{ question.prompt }}</a>
+                    </td>
+                    <td class="student-test">
+                         <span class="badge badge-info badge-pill">
+                            {{ question.answers.all|length }}
+                        </span>
+                    </td>
+                    <td class="student-test"><a href="{% url 'question-edit' question.id %}"
+                                                class="btn btn-warning btn-sm active" role="button">Редактирай</a>
+                    </td>
+                    <td class="student-test"><a href="{% url 'question-delete' question.id %}"
+                                                class="btn btn-danger btn-sm active" role="button">Изтрий</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}

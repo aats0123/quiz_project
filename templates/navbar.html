@@ -2,17 +2,24 @@
 {% load widget_tweaks %}
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-bottom-margin">
+   <a class="navbar-brand" href="{% url 'quiz-home' %}">
+    <img src="https://png.pngitem.com/pimgs/s/287-2875482_q-icon-png-transparent-png.png" width="30" height="30" class="d-inline-block align-top rounded-circle" alt="">
+    Quizeee
+  </a>
     <div class="navbar-collapse collapse w-100 order-0 order-md-0 dual-collapse2">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link home-link" href="{% url 'quiz-home' %}">Quizeee</a>
-            </li>
+{#            <li class="nav-item active">#}
+{#                <a class="nav-link home-link" href="{% url 'quiz-home' %}">Quizeee</a>#}
+{#            </li>#}
             {% if user.groups.all.0.name == 'teachers' %}
+               <li class="nav-item active">
+                <a class="nav-link home-link" href="{% url 'teacher-detail' user.id %}">Home</a>
+            </li>
+{#                <li class="nav-item">#}
+{#                    <a class="nav-link" href="{% url 'teacher-detail' user.id %}">Home</a>#}
+{#                </li>#}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'teacher-detail' user.id %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="{% url 'assigned-quizzes' %}">Зададени тестове</a>
                 </li>
 
 
@@ -28,9 +35,9 @@
             {% endif %}
 
 
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
+            {#            <li class="nav-item">#}
+            {#                <a class="nav-link" href="#">Link</a>#}
+            {#            </li>#}
         </ul>
     </div>
 

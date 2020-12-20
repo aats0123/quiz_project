@@ -2,12 +2,18 @@ from django import forms
 
 from quiz.models import Quiz, Question, Answer, StudentTest
 from registrator.models import TeacherProfile, StudentProfile
+from utils import mailer
 
 
 class QuizCreateForm(forms.ModelForm):
     class Meta:
         model = Quiz
         exclude = ('subject', 'author')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].label = 'Име'
+        self.fields['description'].label = 'Описание'
 
     def save(self, user=None):
         quiz = super().save(commit=False)
@@ -27,13 +33,10 @@ class QuestionCreateForm(forms.ModelForm):
         model = Question
         exclude = ('author', 'subject', 'quiz')
 
-    # def __init__(self, user, quiz_id=None, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     if not quiz_id:
-    #         self.fields['quiz'] = forms.ModelChoiceField(queryset=Quiz.objects.filter(author=user))
-    # else:
-    #     self.fields['quiz'] = Quiz.objects.get(id=quiz_id)
-    #     #self.fields['quiz']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['prompt'].label = 'Въпрос'
+
     def save(self, user=None, quiz_id=None):
         question = super().save(commit=False)
         teacher_profile = TeacherProfile.objects.get(user=user)
@@ -48,6 +51,11 @@ class AnswerCreateForm(forms.ModelForm):
     class Meta:
         model = Answer
         exclude = ('question',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].label = 'Отговор'
+        self.fields['is_correct'].label = 'Верен'
 
     def save(self, question_id=None):
         answer = super().save(commit=False)
@@ -72,7 +80,7 @@ class QuizAssignForm(forms.ModelForm):
         )
         self.fields['quiz'].label = 'Изберете тест'
 
-    def save(self, user=None):
+    def save(self, teacher=None):
         school_class = self.cleaned_data['school_class']
         quiz = self.cleaned_data['quiz']
         student_profiles = StudentProfile.objects.filter(school_class=school_class)
@@ -82,12 +90,29 @@ class QuizAssignForm(forms.ModelForm):
             if not student_test_query:
                 student_test = StudentTest(student=student, quiz=quiz)
                 student_test.save()
+                link = f'http://localhost:8000/student/test/{student_test.id}'
+                self.send_email(teacher, student.email, link)
+                # return student_test.id
             elif all([st.is_completed for st in student_test_query]):
                 student_test = StudentTest(student=student, quiz=quiz)
                 student_test.save()
+                return student_test.id
 
             else:
                 continue
+
+    def send_email(self, teacher, student_email, link):
+        school_class = self.cleaned_data['school_class']
+        quiz = self.cleaned_data['quiz']
+        # student_profiles = StudentProfile.objects.filter(school_class=school_class)
+
+        details = {
+            'teacher': f'{teacher.first_name} {teacher.last_name}',
+            'title': quiz.title,
+            'subject': quiz.subject,
+            'link': link,
+        }
+        mailer.send_email(details, student_email)
 
 
 class TestQuizForm(forms.ModelForm):
@@ -105,8 +130,6 @@ class TestQuizForm(forms.ModelForm):
             self.fields[question.prompt] = forms.CharField(
                 widget=forms.RadioSelect(
                     choices=list(zipped_answers),
-                    attrs={'id':question.id, 'name': str(question.id)}
+                    attrs={'id': question.id, 'name': str(question.id)}
                 ),
             )
-
-

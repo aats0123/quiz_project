@@ -3,18 +3,24 @@
 {% block content %}
     <form method="post" action="">
         {% csrf_token %}
-        {% if answer %}
-            Сигурни ли сте, че изкате да изтриете следния отговор:
-            {{ answer.text }}
+        <div class="container">
+            <ul class="list-group">
+                {% if answer %}
+                    <li class="list-group-item disabled" aria-disabled="true">Сигурни ли сте, че изкате да изтриете следния отговор:</li>
+                    <li class="list-group-item">{{ answer.text }}</li>
+                    <li class="list-group-item"><button type="submit" class="btn btn-danger">Изтрий</button></li>
+                {% elif question %}
+                    <li class="list-group-item disabled" aria-disabled="true">Сигурни ли сте, че изкате да изтриете следния въпрос:</li>
+                    <li class="list-group-item">{{ question.prompt }}</li>
+                    <li class="list-group-item"><button type="submit" class="btn btn-danger">Изтрий</button></li>
+                {% elif quiz %}
+                    <li class="list-group-item disabled" aria-disabled="true">Сигурни ли сте, че изкате да изтриете следният тест:</li>
+                    <li class="list-group-item">{{ quiz.title }}</li>
+                    <li class="list-group-item"><button type="submit" class="btn btn-danger">Изтрий</button></li>
+                {% endif %}
+            </ul>
+        </div>
 
-        {% elif question %}
-            Сигурни ли сте, че изкате да изтриете следния въпрос:
-            {{ question.prompt }}
-        {% elif quiz %}
-           <p>Сигурни ли сте, че изкате да изтриете следният тест: </p>
-            <div>"{{ quiz.title }}"</div>
-        {% endif %}
 
-        <button type="submit">Delete</button>
     </form>
 {% endblock %}
